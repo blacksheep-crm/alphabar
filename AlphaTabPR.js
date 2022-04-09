@@ -33,7 +33,7 @@ if (typeof (SiebelAppFacade.AlphaTabPR) === "undefined") {
                 AlphaTabPR.prototype.BindEvents = function () {
                     SiebelAppFacade.AlphaTabPR.superclass.BindEvents.apply(this, arguments);
                     try {
-                       this.BindAlphaTabEvents();                       
+                        this.BindAlphaTabEvents();
                     }
                     catch (e) {
                         console.log("Error in AlphaTabPR:BindEvents: " + e.toString());
@@ -41,7 +41,7 @@ if (typeof (SiebelAppFacade.AlphaTabPR) === "undefined") {
                 }
 
                 //bind events helper
-                AlphaTabPR.prototype.BindAlphaTabEvents = function (){
+                AlphaTabPR.prototype.BindAlphaTabEvents = function () {
                     var pm = this.GetPM();
                     var fi = pm.Get("GetFullId");
                     var co = this.GetInlineQueryControls();
@@ -62,6 +62,17 @@ if (typeof (SiebelAppFacade.AlphaTabPR) === "undefined") {
                                 $("#bcrm_abar_" + fi).hide();
                             }
                         });
+
+                        //experimental filter
+                        var exclude_items = ["Revenue", "Committed", "Team Space", "New"];
+                        $(qcb_elem).data('ui-autocomplete')._renderMenu = function (ul, items) {
+                            var that = this;
+                            $.each(items, function (index, item) {
+                                if (exclude_items.indexOf(item.label) == -1) {
+                                    that._renderItemData(ul, item);
+                                }
+                            });
+                        };
                     }
                 }
 
@@ -121,7 +132,7 @@ if (typeof (SiebelAppFacade.AlphaTabPR) === "undefined") {
                     }
                     //override example
                     //BONUS POINTS: create getter/setter for abar
-                    abar["A"]="A* OR a*";
+                    abar["A"] = "A* OR a*";
 
                     var pm = this.GetPM();
                     var pr = this;
@@ -185,22 +196,22 @@ if (typeof (SiebelAppFacade.AlphaTabPR) === "undefined") {
                         //show alpha tabs after inline query bar
                         //good for wide applets
                         qcb_cont = qcb_elem.parent();
-                        if (pm.Get("IsPopup")){
+                        if (pm.Get("IsPopup")) {
                             qcb_cont.parent().append(abar_cont);
                         }
-                        else{
+                        else {
                             qcb_cont.after(abar_cont);
                         }
-                        
+
                         //Example: show alpha tabs on bottom of list applet (retro)
                         //$("#" + fi).append(abar_cont);
-                        
+
                         //show alpha tabs if column already (pre)selected
-                        setTimeout(function(){
-                            if (qcb_elem.val() != ""){
+                        setTimeout(function () {
+                            if (qcb_elem.val() != "") {
                                 $("#bcrm_abar_" + fi).show();
                             }
-                        },100);
+                        }, 100);
                     }
                 }
 
